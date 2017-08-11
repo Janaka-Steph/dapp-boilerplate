@@ -37,6 +37,9 @@ Migrate the contracts to local chain
     
 Migrate the contracts to Kovan chain
 
+    Create a .env file at the root level with 
+      * MNEMONIC = "My 12 words"
+
     npm run migrateTestnet
     or 
     cd customModules/protocol
