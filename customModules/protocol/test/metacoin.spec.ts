@@ -1,64 +1,36 @@
 import * as assert from 'assert'
-var MetaCoin = artifacts.require("./MetaCoin.sol");
+const MetaCoinAbstraction = artifacts.require('MetaCoin')
+let MetaCoin
 
-contract('MetaCoin', function(accounts) {
-  it("should put 10000 MetaCoin in the first account", function() {
-    return MetaCoin.deployed().then(function(instance) {
-      return instance.getBalance.call(accounts[0]);
-    }).then(function(balance) {
-      assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account");
-    });
-  });
-  it("should call a function that depends on a linked library", function() {
-    var meta;
-    var metaCoinBalance;
-    var metaCoinEthBalance;
 
-    return MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(accounts[0]);
-    }).then(function(outCoinBalance) {
-      metaCoinBalance = outCoinBalance.toNumber();
-      return meta.getBalanceInEth.call(accounts[0]);
-    }).then(function(outCoinBalanceEth) {
-      metaCoinEthBalance = outCoinBalanceEth.toNumber();
-    }).then(function() {
-      assert.equal(metaCoinEthBalance, 2 * metaCoinBalance, "Library function returned unexpected function, linkage may be broken");
-    });
-  });
-  it("should send coin correctly", function() {
-    var meta;
+contract('MetaCoin', (accounts) => {
+  before(async () => {
+    MetaCoin = await MetaCoinAbstraction.deployed()
+  })
 
-    // Get initial balances of first and second account.
-    var account_one = accounts[0];
-    var account_two = accounts[1];
+  it('should deploy contract', () => {
+    assert(MetaCoin.address, "contract is not deployed")
+  })
 
-    var account_one_starting_balance;
-    var account_two_starting_balance;
-    var account_one_ending_balance;
-    var account_two_ending_balance;
+  it("should put 10000 MetaCoin in the first account", async () => {
+    const balance = await MetaCoin.getBalance.call(accounts[0])
+    assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account")
+  })
 
-    var amount = 10;
+  it("should call a function that depends on a linked library", async () => {
+    const balance = (await MetaCoin.getBalance.call(accounts[0])).toNumber()
+    const balanceEth = (await MetaCoin.getBalanceInEth.call(accounts[0])).toNumber()
+    assert.equal(balanceEth, 2 * balance, "Library function returned unexpected function, linkage may be broken")
+  })
 
-    return MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account_one);
-    }).then(function(balance) {
-      account_one_starting_balance = balance.toNumber();
-      return meta.getBalance.call(account_two);
-    }).then(function(balance) {
-      account_two_starting_balance = balance.toNumber();
-      return meta.sendCoin(account_two, amount, {from: account_one});
-    }).then(function() {
-      return meta.getBalance.call(account_one);
-    }).then(function(balance) {
-      account_one_ending_balance = balance.toNumber();
-      return meta.getBalance.call(account_two);
-    }).then(function(balance) {
-      account_two_ending_balance = balance.toNumber();
-
-      assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
-      assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
-    });
-  });
-});
+  it("should send coin correctly", async () => {
+    const amount = 10
+    const balance1Start = (await MetaCoin.getBalance.call(accounts[0])).toNumber()
+    const balance2Start = (await MetaCoin.getBalance.call(accounts[1])).toNumber()
+    MetaCoin.sendCoin(accounts[1], amount, {from: accounts[0]})
+    const balance1End = (await MetaCoin.getBalance.call(accounts[0])).toNumber()
+    const balance2End = (await MetaCoin.getBalance.call(accounts[1])).toNumber()
+    assert.equal(balance1End, balance1Start - amount, "Amount wasn't correctly taken from the sender")
+    assert.equal(balance2End, balance2Start + amount, "Amount wasn't correctly sent to the receiver")
+  })
+})
