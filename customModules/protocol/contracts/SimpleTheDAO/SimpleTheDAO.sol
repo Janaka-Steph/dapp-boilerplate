@@ -20,14 +20,14 @@ contract SimpleTheDAO {
     }
   }
 
-   function withdrawSafeMath(uint amount) {
-      LogString('First Triggered!!');
-      if (credit[msg.sender]>= amount) {
-        bool res = msg.sender.call.value(amount)();
-        credit[msg.sender] = credit[msg.sender].sub(amount);
-        LogString('Last Triggered!!');
-      }
+ function withdrawSafeMath(uint amount) {
+    LogString('First Triggered!!');
+    if (credit[msg.sender]>= amount) {
+      bool res = msg.sender.call.value(amount)();
+      credit[msg.sender] = credit[msg.sender].sub(amount);
+      LogString('Last Triggered!!');
     }
+  }
 
   function queryCredit(address to) returns (uint){
     return credit[to];
