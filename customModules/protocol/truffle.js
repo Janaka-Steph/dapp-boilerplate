@@ -1,4 +1,5 @@
-require('dotenv').config({path: '../../.env'})
+const path = process.env.TEST ? '../../../../../.env' : '../../.env'
+require('dotenv').config({path})
 const isTestnet = process.env.NETWORK === 'testnet' ? true : false
 let address, engine
 
