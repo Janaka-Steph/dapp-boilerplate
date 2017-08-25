@@ -3,7 +3,15 @@ import { Component } from 'react'
 import * as classNames from 'classnames'
 import {FormGroup, FormFeedback, Input, Label} from 'reactstrap'
 
-export default class RenderInput extends Component {
+export default class RenderInput extends Component<{
+  id: string
+  input: string,
+  label: string,
+  placeholder: string,
+  type: string,
+  meta: any
+}, {}> {
+
   render() {
     const {
             id,

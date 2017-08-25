@@ -3,16 +3,14 @@ import {Component} from 'react'
 import * as classNames from 'classnames'
 import {FormGroup, FormFeedback, Input, Label} from 'reactstrap'
 
-export default class RenderInput extends Component {
-  /*static propTypes = {
-   input: React.PropTypes.object,
-   placeholder: React.PropTypes.string,
-   type: React.PropTypes.string.isRequired,
-   meta: React.PropTypes.shape({
-   touched: React.PropTypes.bool,
-   error: React.PropTypes.any,
-   }),
-   };*/
+export default class RenderInput extends Component<{
+  id: string
+  input: string,
+  label: string,
+  placeholder: string,
+  type: string,
+  meta: any
+}, {}> {
 
   render() {
     const {
