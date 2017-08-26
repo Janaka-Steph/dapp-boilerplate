@@ -27,21 +27,35 @@ export const run = () => new Promise((resolve, reject) => {
     // ======================================================
     Promise.all(
       Artifacts
-        .map(artifact => contract(artifact))
-        .map((contract) => {
-          contract.setProvider(window.web3.currentProvider)
-          return contract.deployed()
+        .map(artifact => {
+          const c = contract(artifact)
+          if(artifact.isFactory) {
+            console.warn(`${artifact.contract_name} not deployed`)
+            c.setProvider(window.web3.currentProvider)
+            return c
+          }
+          c.setProvider(window.web3.currentProvider)
+          return c.deployed()
         }))
-      .then((deployedContracts) => {
-        deployedContracts.forEach(function (contract) {
-          // Add name property to the object
-          let name = contract.constructor.contract_name
-          contract['name'] = name
-          // Add each contract to exported contracts
-          contracts[name] = contract
+      .then((sc) => {
+        let name, obj
+        sc.forEach(function (c) {
+          if (typeof c === 'object') {
+            // Add name property to the object
+            name = c.constructor.contract_name
+            c['name'] = name
+            // Add each contract to exported contracts*/
+            contracts[name] = c
+          }
+          else {
+            name = c._json.contract_name
+            obj = {...c, name}
+            // Add each contract to exported contracts*/
+            contracts[name] = obj
+          }
           resolve(contracts)
         })
-        console.log('Smart contracts ready')
+        console.log(`Smart contracts ready`)
       })
       .catch(e => reject(e))
   })

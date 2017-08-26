@@ -2,6 +2,7 @@ import {combineReducers} from 'redux'
 import {routerReducer} from 'react-router-redux'
 import {reducer as formReducer} from 'redux-form'
 import ethereumReducer from './ethereum/ethereumReducer'
+import rpsReducer from './rps/rpsReducer'
 import userReducer from './user/userReducer'
 
 /***************************** App State **************************************
@@ -23,6 +24,7 @@ export const makeRootReducer = (asyncReducers = null) => {
     ethereum: ethereumReducer,
     form: formReducer,
     routing: routerReducer,
+    rps: rpsReducer,
     user: userReducer,
     ...asyncReducers
   })

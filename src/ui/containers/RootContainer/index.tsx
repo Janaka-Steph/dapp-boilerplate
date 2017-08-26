@@ -7,7 +7,7 @@ import {history} from '../../redux/createStore'
 import TopBar from '../../components/common/TopBar'
 // Pages
 import HomePage from '../HomeContainer'
-import TestPage from '../TestContainer'
+import RPSPage from '../RPSContainer'
 
 interface State {}
 interface Props {
@@ -34,7 +34,7 @@ class RootContainer extends React.Component<Props, State> {
                 <div className="col-12">
                   <div>
                     <Route exact path="/" component={HomePage}/>
-                    <Route exact path="/test" component={TestPage}/>
+                    <Route exact path="/rps" component={RPSPage}/>
                   </div>
                 </div>
               </div>

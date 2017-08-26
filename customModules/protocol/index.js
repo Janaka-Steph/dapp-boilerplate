@@ -1,11 +1,7 @@
-const ConvertLib = require('./build/contracts/ConvertLib.json')
-const Greeter = require('./build/contracts/Greeter.json')
-const MetaCoin = require('./build/contracts/MetaCoin.json')
-const ProofOfExistence = require('./build/contracts/ProofOfExistence.json')
+const RPS = require('./build/contracts/RPS.json')
+const Hasher = require('./build/contracts/Hasher.json')
 
 module.exports = [
-  ConvertLib,
-  Greeter,
-  MetaCoin,
-  ProofOfExistence,
+  Object.assign({}, RPS, {isFactory: true}),
+  Object.assign({}, Hasher, {isFactory: true}),
 ]

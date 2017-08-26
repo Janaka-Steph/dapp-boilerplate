@@ -6,6 +6,7 @@ declare module "*.json" ;
 interface Window {
   web3: any;
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+  RPSInstance;
 }
 
 //declare var Promise: any;

@@ -45,7 +45,7 @@ export default class TopBar extends Component<Props, State> {
                 <NavLink tag={Link} to="/">Home</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to="/test">Test</NavLink>
+                <NavLink tag={Link} to="/rps">RPS</NavLink>
               </NavItem>
             </Nav>
           </Collapse>

@@ -3,6 +3,7 @@
  */
 import {all, call, fork, put, race, take} from 'redux-saga/lib/effects.js'
 import {watchGetBlockNumber} from './ethereum/ethereumSaga'
+import rps from './rps/rpsSaga'
 import user, {watchDefaultAccountChange} from './user/userSaga'
 
 function* bootstrap() {
@@ -23,9 +24,12 @@ function* bootstrap() {
 /******************************************************************************/
 export default function* rootSaga() {
   yield all([
+    // Common
     fork(watchGetBlockNumber),
     fork(user),
     fork(bootstrap),
-    call(watchDefaultAccountChange),
+    //call(watchDefaultAccountChange),
+    // Others
+    call(rps),
   ])
 }
