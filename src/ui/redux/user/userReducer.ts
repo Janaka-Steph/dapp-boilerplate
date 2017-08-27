@@ -1,6 +1,7 @@
 const initialState = {
   accounts: [],
   balance: null,
+  p2balance: null,
   defaultAccount: null,
 }
 // ------------------------------------

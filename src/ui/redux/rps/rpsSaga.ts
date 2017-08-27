@@ -1,6 +1,7 @@
 // ========================================================
 // RPS Sagas
 // ========================================================
+import {delay} from 'redux-saga'
 import {call, put, select, takeEvery} from 'redux-saga/lib/effects.js'
 import waitForMined from '../../helpers/waitForMined'
 import {contracts} from '../../blockchainConnect'
@@ -18,6 +19,7 @@ function* onRPSDeploySubmitWorker(action) {
     yield call(waitForMined, window.RPSInstance.transactionHash, 'onRPSDeploySubmit') // setInterval until mined
     yield put({type: 'TX_RPS_DEPLOY_SUBMISSION_SUCCEED', tx: window.RPSInstance.transactionHash, values: {c1Hash, addrPlayerTwo}})
     // Update player's balances
+    yield delay(5000)
     yield put({type: 'USER_BALANCE_REQUESTED'})
     yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
@@ -38,6 +40,7 @@ function* onMoveSubmitWorker(action) {
     yield call(waitForMined, tx, 'onMoveSubmit') // setInterval until mined
     yield put({type: 'TX_MOVE_SUBMISSION_SUCCEED', tx})
     // Update player 2 balance
+    yield delay(5000)
     yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_MOVE_SUBMISSION_FAILED', e: e.message})
@@ -56,6 +59,7 @@ function* onSolveSubmitWorker(action) {
     yield call(waitForMined, tx, 'onSolveSubmit') // setInterval until mined
     yield put({type: 'TX_SOLVE_SUBMISSION_SUCCEED', tx})
     // Update player's balances
+    yield delay(5000)
     yield put({type: 'USER_BALANCE_REQUESTED'})
     yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
@@ -91,6 +95,7 @@ function* onP1TimeoutWorker() {
     yield call(waitForMined, tx, 'onP1Timeout')
     yield put({type: 'TX_P1_TIMEOUT_SUBMISSION_SUCCEED', tx})
     // Update player 2 balance
+    yield delay(5000)
     yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_P1_TIMEOUT_SUBMISSION_FAILED', e: e.message})
@@ -108,6 +113,7 @@ function* onP2TimeoutWorker() {
     yield call(waitForMined, tx, 'onP2Timeout')
     yield put({type: 'TX_P2_TIMEOUT_SUBMISSION_SUCCEED', tx})
     // Update player 1 balance
+    yield delay(5000)
     yield put({type: 'USER_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_P2_TIMEOUT_SUBMISSION_FAILED', e: e.message})
