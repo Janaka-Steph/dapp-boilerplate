@@ -18,7 +18,7 @@ contract RPS {
     bytes32 public c1Hash; // Commitment of j1.
     Move public c2; // Move of j2. Move.Null before he played.
     uint256 public stake; // Amout bet by each party.
-    uint256 public TIMEOUT = 5 minutes; // If some party takes more than TIMEOUT to respond, the other can call TIMEOUT to win.
+    uint256 public TIMEOUT = 5 seconds; // If some party takes more than TIMEOUT to respond, the other can call TIMEOUT to win.
     uint256 public lastAction; // The time of the last action. Usefull to determine if someone has timed out.
 
     /** @dev Constructor. Must send the amount at stake when creating the contract. Note that the move and salt must be saved.
