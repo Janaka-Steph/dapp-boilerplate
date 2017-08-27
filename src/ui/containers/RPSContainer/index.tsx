@@ -5,7 +5,7 @@ import MoveForm from '../../components/MoveForm'
 import SolveForm from '../../components/SolveForm'
 import HasherForm from '../../components/HasherForm'
 import Balances from '../../components/Balances'
-
+import Timeouts from '../../components/Timeouts'
 /**
  * RPSContainer
  */
@@ -13,6 +13,8 @@ class RPSPage extends React.Component<{
   onDeploySubmit: () => {},
   onGenerateHashSubmit: () => {},
   onMoveSubmit: () => {},
+  onP1TimeoutSubmit: () => {},
+  onP2TimeoutSubmit: () => {},
   onSolveSubmit: () => {},
 }, {}> {
   constructor(props, context) {
@@ -26,6 +28,8 @@ class RPSPage extends React.Component<{
       onGenerateHashSubmit,
       onMoveSubmit,
       onSolveSubmit,
+      onP1TimeoutSubmit,
+      onP2TimeoutSubmit,
       p1balance,
       p2balance,
     } = this.props
@@ -39,6 +43,15 @@ class RPSPage extends React.Component<{
             <Balances
               p1balance={p1balance}
               p2balance={p2balance}
+            />
+          </div>
+        </div>
+
+        <div className="row m-top-50">
+          <div className="col">
+            <Timeouts
+              onP1TimeoutSubmit={onP1TimeoutSubmit}
+              onP2TimeoutSubmit={onP2TimeoutSubmit}
             />
           </div>
         </div>
@@ -99,6 +112,8 @@ const mapDispatchToProps = (dispatch) => {
     onMoveSubmit: (values) => dispatch({type: 'TX_MOVE_SUBMISSION_REQUESTED', values}),
     onSolveSubmit: (values) => dispatch({type: 'TX_SOLVE_SUBMISSION_REQUESTED', values}),
     onGenerateHashSubmit: (values) => dispatch({type: 'GENERATE_HASH_SUBMISSION_REQUESTED', values}),
+    onP1TimeoutSubmit: () => dispatch({type: 'TX_P1_TIMEOUT_SUBMISSION_REQUESTED'}),
+    onP2TimeoutSubmit: () => dispatch({type: 'TX_P2_TIMEOUT_SUBMISSION_REQUESTED'}),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(RPSPage)

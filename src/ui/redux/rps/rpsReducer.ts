@@ -27,7 +27,6 @@ const createCallActionHandlers = (actionName) => {
   return {
     [`${actionName}_SUCCEED`]: (state, action: {values: object}) => {
       const {values} = action
-      console.log('values', values)
       return {...state, ...values}
     },
     [`${actionName}_FAILED`]: (state, action: {e: string}) => {

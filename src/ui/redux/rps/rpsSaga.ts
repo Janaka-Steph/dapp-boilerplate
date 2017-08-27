@@ -79,6 +79,41 @@ function* onGenerateHashWorker(action) {
   }
 }
 // ========================================================
+// Timeout submission - Triggered by P2
+// ========================================================
+let onP1Timeout = (addrPlayerTwo) => {
+  return window.RPSInstance.j1Timeout.sendTransaction({from: addrPlayerTwo, gas: 4000000})
+}
+function* onP1TimeoutWorker() {
+  try {
+    const addrPlayerTwo = yield select((s) => s.rps.addrPlayerTwo)
+    const tx = yield call(onP1Timeout, addrPlayerTwo)
+    yield call(waitForMined, tx, 'onP1Timeout')
+    yield put({type: 'TX_P1_TIMEOUT_SUBMISSION_SUCCEED', tx})
+    // Update player 2 balance
+    yield put({type: 'P2_BALANCE_REQUESTED'})
+  } catch (e) {
+    yield put({type: 'TX_P1_TIMEOUT_SUBMISSION_FAILED', e: e.message})
+  }
+}
+// ========================================================
+// Timeout submission - Triggered by P1
+// ========================================================
+let onP2Timeout = () => {
+  return window.RPSInstance.j2Timeout.sendTransaction({from: window.web3.eth.defaultAccount, gas: 4000000})
+}
+function* onP2TimeoutWorker() {
+  try {
+    const tx = yield call(onP2Timeout)
+    yield call(waitForMined, tx, 'onP2Timeout')
+    yield put({type: 'TX_P2_TIMEOUT_SUBMISSION_SUCCEED', tx})
+    // Update player 1 balance
+    yield put({type: 'USER_BALANCE_REQUESTED'})
+  } catch (e) {
+    yield put({type: 'TX_P2_TIMEOUT_SUBMISSION_FAILED', e: e.message})
+  }
+}
+// ========================================================
 // Watch RPS saga
 // ========================================================
 export default function* rps() {
@@ -86,4 +121,6 @@ export default function* rps() {
   yield takeEvery('TX_MOVE_SUBMISSION_REQUESTED', onMoveSubmitWorker)
   yield takeEvery('TX_SOLVE_SUBMISSION_REQUESTED', onSolveSubmitWorker)
   yield takeEvery('GENERATE_HASH_SUBMISSION_REQUESTED', onGenerateHashWorker)
+  yield takeEvery('TX_P1_TIMEOUT_SUBMISSION_REQUESTED', onP1TimeoutWorker)
+  yield takeEvery('TX_P2_TIMEOUT_SUBMISSION_REQUESTED', onP2TimeoutWorker)
 }
