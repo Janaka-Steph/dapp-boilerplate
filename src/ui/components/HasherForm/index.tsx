@@ -6,29 +6,29 @@ import MoveChoices from '../MoveChoices'
 // ------------------------------------
 // Validation
 // ------------------------------------
-// const validate = values => {}
+//
 // ------------------------------------
 // After Submit
 // ------------------------------------
-//
+const afterSubmit = (result, dispatch) =>
+  dispatch(reset('HasherForm'))
 // ------------------------------------
 // Form
 // ------------------------------------
-let MoveForm = (props) => {
+let HasherForm = (props) => {
   const {handleSubmit, onSubmit} = props
   return (
-    <div id="MoveForm" className="form">
+    <div id="HasherForm" className="form">
       <Form onSubmit={handleSubmit(onSubmit)}>
-
-        <MoveChoices/>
+       <MoveChoices />
 
         <div className="row">
           <div className="col-12">
             <Field
               component={Input}
-              label="stake"
-              name="stake"
-              placeholder="Enter the stake"
+              label="salt"
+              name="salt"
+              placeholder="Enter the salt"
               type="number"
             />
           </div>
@@ -41,12 +41,13 @@ let MoveForm = (props) => {
           size="lg"
           type="submit"
         >
-          {'Submit'}
+          {'Generate Hash'}
         </Button>
       </Form>
     </div>
   )
 }
-export default MoveForm = reduxForm({
-  form: 'MoveForm',
-})(MoveForm)
+export default HasherForm = reduxForm({
+  form: 'HasherForm',
+  onSubmitSuccess: afterSubmit,
+})(HasherForm)

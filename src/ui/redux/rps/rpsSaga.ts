@@ -17,12 +17,15 @@ function* onRPSDeploySubmitWorker(action) {
     window.RPSInstance = yield call(onRPSDeploySubmit, c1Hash, addrPlayerTwo, stake)
     yield call(waitForMined, window.RPSInstance.transactionHash, 'onRPSDeploySubmit') // setInterval until mined
     yield put({type: 'TX_RPS_DEPLOY_SUBMISSION_SUCCEED', tx: window.RPSInstance.transactionHash, values: {c1Hash, addrPlayerTwo}})
+    // Update player's balances
+    yield put({type: 'USER_BALANCE_REQUESTED'})
+    yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_RPS_DEPLOY_SUBMISSION_FAILED', e: e.message})
   }
 }
 // ========================================================
-// Move submission
+// P2 Move submission
 // ========================================================
 let onMoveSubmit = (move, addrPlayerTwo, stake) => {
   return window.RPSInstance.play.sendTransaction(move, {from: addrPlayerTwo, gas: 1000000, value: web3.toWei(stake, 'ether')})
@@ -34,6 +37,8 @@ function* onMoveSubmitWorker(action) {
     const tx = yield call(onMoveSubmit, move, addrPlayerTwo, stake)
     yield call(waitForMined, tx, 'onMoveSubmit') // setInterval until mined
     yield put({type: 'TX_MOVE_SUBMISSION_SUCCEED', tx})
+    // Update player 2 balance
+    yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_MOVE_SUBMISSION_FAILED', e: e.message})
   }
@@ -50,8 +55,27 @@ function* onSolveSubmitWorker(action) {
     const tx = yield call(onSolveSubmit, move, salt)
     yield call(waitForMined, tx, 'onSolveSubmit') // setInterval until mined
     yield put({type: 'TX_SOLVE_SUBMISSION_SUCCEED', tx})
+    // Update player's balances
+    yield put({type: 'USER_BALANCE_REQUESTED'})
+    yield put({type: 'P2_BALANCE_REQUESTED'})
   } catch (e) {
     yield put({type: 'TX_SOLVE_SUBMISSION_FAILED', e: e.message})
+  }
+}
+// ========================================================
+// On generate hash submission
+// ========================================================
+let onGenerateHash = (move, salt) => {
+  const {Hasher}: any = contracts
+  return Hasher.hash(move, salt)
+}
+function* onGenerateHashWorker(action) {
+  try {
+    const {move, salt} = action.values
+    const hash = yield call(onGenerateHash, move, salt)
+    yield put({type: 'GENERATE_HASH_SUBMISSION_SUCCEED', values: {hash}})
+  } catch (e) {
+    yield put({type: 'GENERATE_HASH_SUBMISSION_FAILED', e: e.message})
   }
 }
 // ========================================================
@@ -61,4 +85,5 @@ export default function* rps() {
   yield takeEvery('TX_RPS_DEPLOY_SUBMISSION_REQUESTED', onRPSDeploySubmitWorker)
   yield takeEvery('TX_MOVE_SUBMISSION_REQUESTED', onMoveSubmitWorker)
   yield takeEvery('TX_SOLVE_SUBMISSION_REQUESTED', onSolveSubmitWorker)
+  yield takeEvery('GENERATE_HASH_SUBMISSION_REQUESTED', onGenerateHashWorker)
 }

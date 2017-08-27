@@ -3,6 +3,7 @@ const initialState = {
   txs: [],
 }
 
+// For transactions
 const createTxActionHandlers = (actionName) => {
   return {
     // Keep the tx id in Redux store and optional values
@@ -21,6 +22,22 @@ const createTxActionHandlers = (actionName) => {
   }
 }
 
+// For constant functions
+const createCallActionHandlers = (actionName) => {
+  return {
+    [`${actionName}_SUCCEED`]: (state, action: {values: object}) => {
+      const {values} = action
+      console.log('values', values)
+      return {...state, ...values}
+    },
+    [`${actionName}_FAILED`]: (state, action: {e: string}) => {
+      const errorLog = {event: `${actionName}_FAILED`, message: action.e}
+      const errors = [...state.errors, errorLog]
+      return {...state, errors}
+    }
+  }
+}
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -28,6 +45,7 @@ const ACTION_HANDLERS = {
     ...createTxActionHandlers('TX_RPS_DEPLOY_SUBMISSION'),
     ...createTxActionHandlers('TX_MOVE_SUBMISSION'),
     ...createTxActionHandlers('TX_SOLVE_SUBMISSION'),
+    ...createCallActionHandlers('GENERATE_HASH_SUBMISSION')
 }
 // ------------------------------------
 // Reducer

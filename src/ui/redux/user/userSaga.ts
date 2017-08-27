@@ -39,6 +39,26 @@ function* setUserBalanceWorker() {
   }
 }
 // ========================================================
+// Set player 2 balance
+// ========================================================
+let setPlayer2Balance = (addrPlayerTwo) => {
+  return new Promise((resolve, reject) => {
+    window.web3.eth.getBalance(addrPlayerTwo, (e, balance) => {
+      if (e) reject(e)
+      resolve(window.web3.fromWei(balance, "ether").valueOf())
+    })
+  })
+}
+function* setPlayer2BalanceWorker() {
+  try {
+    const addrPlayerTwo = yield select((s) => s.rps.addrPlayerTwo)
+    const p2balance = yield call(setPlayer2Balance, addrPlayerTwo)
+    yield put({type: 'P2_BALANCE_SUCCEED', p2balance})
+  } catch (e) {
+    yield put({type: 'P2_BALANCE_FAILED', e: e.message})
+  }
+}
+// ========================================================
 // Get accounts
 // ========================================================
 let fetchAccounts = () => {
@@ -86,4 +106,5 @@ export default function* user() {
   yield takeEvery('USER_ACCOUNTS_REQUESTED', fetchUserAccountsWorker)
   yield takeEvery('USER_DEFAULT_ACCOUNT_REQUESTED', setUserDefaultAccountWorker)
   yield takeEvery('USER_BALANCE_REQUESTED', setUserBalanceWorker)
+  yield takeEvery('P2_BALANCE_REQUESTED', setPlayer2BalanceWorker)
 }

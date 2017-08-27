@@ -3,5 +3,5 @@ const Hasher = require('./build/contracts/Hasher.json')
 
 module.exports = [
   Object.assign({}, RPS, {isFactory: true}),
-  Object.assign({}, Hasher, {isFactory: true}),
+  Object.assign({}, Hasher, {isFactory: false}),
 ]

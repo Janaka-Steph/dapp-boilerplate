@@ -24,6 +24,12 @@ const ACTION_HANDLERS = {
   },
   ['USER_BALANCE_FAILED']: (state, action) => {
     return {...state, error: action.e}
+  },
+  ['P2_BALANCE_SUCCEED']: (state, action) => {
+  return {...state, p2balance: action.p2balance}
+  },
+  ['P2_BALANCE_FAILED']: (state, action) => {
+  return {...state, error: action.e}
   }
 }
 // ------------------------------------
