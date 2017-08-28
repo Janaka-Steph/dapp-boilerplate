@@ -15,9 +15,11 @@ let onRPSDeploySubmit = (c1Hash, addrPlayerTwo, stake) => {
 function* onRPSDeploySubmitWorker(action) {
   try {
     const {c1Hash, addrPlayerTwo, stake} = action.values
-    window.RPSInstance = yield call(onRPSDeploySubmit, c1Hash, addrPlayerTwo, stake)
-    yield call(waitForMined, window.RPSInstance.transactionHash, 'onRPSDeploySubmit') // setInterval until mined
-    yield put({type: 'TX_RPS_DEPLOY_SUBMISSION_SUCCEED', tx: window.RPSInstance.transactionHash, values: {c1Hash, addrPlayerTwo}})
+    const RPSInstance = yield call(onRPSDeploySubmit, c1Hash, addrPlayerTwo, stake)
+    yield call(waitForMined, RPSInstance.transactionHash, 'onRPSDeploySubmit')
+    yield put({type: 'TX_RPS_DEPLOY_SUBMISSION_SUCCEED', tx: RPSInstance.transactionHash, values: {c1Hash, addrPlayerTwo}})
+    // Update RPS contract address
+    yield put({type: 'UPDATE_RPS_CONTRACT_ADDR_SUCCEED', values: {contracts: {$merge: {RPS: {address: RPSInstance.address}}}}})
     // Update player's balances
     yield delay(5000)
     yield put({type: 'USER_BALANCE_REQUESTED'})
@@ -29,14 +31,16 @@ function* onRPSDeploySubmitWorker(action) {
 // ========================================================
 // P2 Move submission
 // ========================================================
-let onMoveSubmit = (move, addrPlayerTwo, stake) => {
-  return window.RPSInstance.play.sendTransaction(move, {from: addrPlayerTwo, gas: 1000000, value: web3.toWei(stake, 'ether')})
+let onMoveSubmit = (RPSAddress, move, addrPlayerTwo, stake) => {
+  const {RPS}: any = contracts
+  return RPS.at(RPSAddress).play.sendTransaction(move, {from: addrPlayerTwo, gas: 1000000, value: web3.toWei(stake, 'ether')})
 }
 function* onMoveSubmitWorker(action) {
   try {
     const {move, stake} = action.values
     const addrPlayerTwo = yield select((s) => s.rps.addrPlayerTwo)
-    const tx = yield call(onMoveSubmit, move, addrPlayerTwo, stake)
+    const RPSAddress = yield select((s) => s.ethereum.contracts.RPS.address)
+    const tx = yield call(onMoveSubmit, RPSAddress, move, addrPlayerTwo, stake)
     yield call(waitForMined, tx, 'onMoveSubmit') // setInterval until mined
     yield put({type: 'TX_MOVE_SUBMISSION_SUCCEED', tx})
     // Update player 2 balance
@@ -49,13 +53,15 @@ function* onMoveSubmitWorker(action) {
 // ========================================================
 // Solve submission
 // ========================================================
-let onSolveSubmit = (move, salt) => {
-  return window.RPSInstance.solve.sendTransaction(Number(move), Number(salt), {from: window.web3.eth.defaultAccount, gas: 1000000})
+let onSolveSubmit = (RPSAddress, move, salt) => {
+  const {RPS}: any = contracts
+  return RPS.at(RPSAddress).solve.sendTransaction(Number(move), Number(salt), {from: window.web3.eth.defaultAccount, gas: 1000000})
 }
 function* onSolveSubmitWorker(action) {
   try {
     const {move, salt} = action.values
-    const tx = yield call(onSolveSubmit, move, salt)
+    const RPSAddress = yield select((s) => s.ethereum.contracts.RPS.address)
+    const tx = yield call(onSolveSubmit, RPSAddress, move, salt)
     yield call(waitForMined, tx, 'onSolveSubmit') // setInterval until mined
     yield put({type: 'TX_SOLVE_SUBMISSION_SUCCEED', tx})
     // Update player's balances
@@ -85,13 +91,15 @@ function* onGenerateHashWorker(action) {
 // ========================================================
 // Timeout submission - Triggered by P2
 // ========================================================
-let onP1Timeout = (addrPlayerTwo) => {
-  return window.RPSInstance.j1Timeout.sendTransaction({from: addrPlayerTwo, gas: 4000000})
+let onP1Timeout = (RPSAddress, addrPlayerTwo) => {
+  const {RPS}: any = contracts
+  return RPS.at(RPSAddress).j1Timeout.sendTransaction({from: addrPlayerTwo, gas: 4000000})
 }
 function* onP1TimeoutWorker() {
   try {
     const addrPlayerTwo = yield select((s) => s.rps.addrPlayerTwo)
-    const tx = yield call(onP1Timeout, addrPlayerTwo)
+    const RPSAddress = yield select((s) => s.ethereum.contracts.RPS.address)
+    const tx = yield call(onP1Timeout, RPSAddress, addrPlayerTwo)
     yield call(waitForMined, tx, 'onP1Timeout')
     yield put({type: 'TX_P1_TIMEOUT_SUBMISSION_SUCCEED', tx})
     // Update player 2 balance
@@ -104,12 +112,14 @@ function* onP1TimeoutWorker() {
 // ========================================================
 // Timeout submission - Triggered by P1
 // ========================================================
-let onP2Timeout = () => {
-  return window.RPSInstance.j2Timeout.sendTransaction({from: window.web3.eth.defaultAccount, gas: 4000000})
+let onP2Timeout = (RPSAddress) => {
+  const {RPS}: any = contracts
+  return RPS.at(RPSAddress).j2Timeout.sendTransaction({from: window.web3.eth.defaultAccount, gas: 4000000})
 }
 function* onP2TimeoutWorker() {
   try {
-    const tx = yield call(onP2Timeout)
+    const RPSAddress = yield select((s) => s.ethereum.contracts.RPS.address)
+    const tx = yield call(onP2Timeout, RPSAddress)
     yield call(waitForMined, tx, 'onP2Timeout')
     yield put({type: 'TX_P2_TIMEOUT_SUBMISSION_SUCCEED', tx})
     // Update player 1 balance

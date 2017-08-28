@@ -1,3 +1,5 @@
+import * as update from 'immutability-helper'
+
 const initialState = {
   blockNumber: null,
   contracts: {},
@@ -25,7 +27,16 @@ const ACTION_HANDLERS = {
   },
   ['FETCH_NETWORK_ID_FAILED']: (state, action) => {
     return  {...state, errorMessage: action.errorMessage}
-  }
+  },
+  ['UPDATE_RPS_CONTRACT_ADDR_SUCCEED']: (state, action) => {
+    const {values} = action
+    return update(state, values)
+  },
+  ['UPDATE_RPS_CONTRACT_ADDR_FAILED']: (state, action: {e: string}) => {
+    const errorLog = {event: `UPDATE_RPS_CONTRACT_ADDR_FAILED`, message: action.e}
+    const errors = [...state.errors, errorLog]
+    return {...state, errors}
+  },
 }
 
 // ------------------------------------
