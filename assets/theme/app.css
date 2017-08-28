@@ -1,0 +1,32 @@
+/* HELPERS */
+/* Margin*/
+.m-btm-10 {margin-bottom: 10px}
+.m-btm-20 {margin-bottom: 20px}
+.m-btm-30 {margin-bottom: 30px}
+.m-btm-50 {margin-bottom: 50px}
+
+.m-top-10 {margin-top: 10px}
+.m-top-20 {margin-top: 20px}
+.m-top-30 {margin-top: 30px}
+.m-top-50 {margin-top: 50px}
+
+/* headers */
+h1 {margin-bottom: 2rem}
+h2 {margin-bottom: 1.5rem}
+h3 {margin-bottom: 1rem}
+
+p {word-wrap: break-word}
+
+/* Forms */
+.form {
+  & input, & textarea {
+    margin-bottom: 1rem;
+  }
+  & button {
+    margin-top: 0.5rem;
+  }
+}
+
+.ethereum-address {
+  color: #c94d42;
+}
