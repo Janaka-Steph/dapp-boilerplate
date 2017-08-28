@@ -9,6 +9,7 @@
     "migrate": "cd customModules/protocol && NETWORK=testrpc truffle migrate",
     "migrateTestnet": "cd customModules/protocol && NETWORK=testnet truffle migrate --network kovan",
     "prod": "npm run cleanCache && NODE_ENV=production node fuse",
+    "start": "node assets/app.js",
     "testUI": "NETWORK=testrpc jest",
     "testProtocol": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testrpc TEST=true truffle test *.js",
     "testProtocol1": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testrpc TEST=true truffle test",
