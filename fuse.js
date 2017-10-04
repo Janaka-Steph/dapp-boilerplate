@@ -21,7 +21,7 @@ Sparky.task('copy-assets', () => Sparky.src('assets/**/**.*', {base: './src/ui'}
 Sparky.task('build', () => {
   const fuse = FuseBox.init({
     alias: {
-      "reactstrap-tether": '', // todo Remove this hack to fix import of reactstrap-tether
+      //"reactstrap-tether": '', // todo Remove this hack to fix import of reactstrap-tether
       "../../customModules/protocol/index.js": "protocol/index.js", // hack to have working path for app and tests
       "../../customModules/protocol/truffle.js": "protocol/truffle.js"
     },
