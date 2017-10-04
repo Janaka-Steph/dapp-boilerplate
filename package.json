@@ -7,17 +7,18 @@
     "dev": "npm run cleanCache && NETWORK=testrpc node fuse",
     "devTestnet": "NETWORK=testnet npm run dev",
     "migrate": "cd customModules/protocol && NETWORK=testrpc truffle migrate",
-    "migrateTestnet": "cd customModules/protocol && NETWORK=testnet truffle migrate --network kovan",
+    "migrateTestnet": "cd customModules/protocol && NETWORK=testnet truffle migrate --network kovanInfura",
     "prod": "npm run cleanCache && NODE_ENV=production node fuse",
     "testUI": "NETWORK=testrpc jest",
     "testProtocol": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testrpc TEST=true truffle test *.js",
     "testProtocol1": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testrpc TEST=true truffle test",
-    "testProtocolTestnet": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testnet TEST=true truffle test *.js --network kovan",
-    "testProtocolTestnet1": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testnet TEST=true truffle test --network kovan"
+    "testProtocolTestnet": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testnet TEST=true truffle test *.js --network kovanInfura",
+    "testProtocolTestnet1": "cd customModules/protocol/test && tsc && cd ../build/tests/test && NETWORK=testnet TEST=true truffle test --network kovanInfura"
   },
   "author": "Stéphane Roche <rstephane@protonmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@digix/truffle-lightwallet-provider": "^0.1.2",
     "@types/jest": "^20.0.8",
     "@types/node": "^8.0.32",
     "@types/react-redux": "^5.0.10",

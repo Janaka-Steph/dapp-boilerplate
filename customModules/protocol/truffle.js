@@ -1,5 +1,58 @@
 const path = process.env.TEST ? '../../../../../.env' : '../../.env'
 require('dotenv').config({path})
+const {ADDRESS, KEYSTORE, PASSWORD} = process.env
+const LightWalletProvider = require('@digix/truffle-lightwallet-provider')
+//import * as LightWalletProvider from '@digix/truffle-lightwallet-provider'
+
+module.exports = {
+  networks: {
+    development: {
+      host: 'localhost',
+      port: 8545,
+      network_id: '*' // Match any network id
+    },
+    kovanInfura: {
+      provider: new LightWalletProvider({
+        keystore: KEYSTORE,
+        password: PASSWORD,
+        rpcUrl: 'https://kovan.infura.io',
+        // debug: true, // optional, show JSON-RPC logs
+      }),
+      network_id: 42,
+    },
+    kovan: {
+      host: 'localhost',
+      port: 8545,
+      network_id: 42,
+      from: ADDRESS,
+    },
+    ropsten: {
+      host: "localhost",
+      port: 8545,
+      network_id: 3,
+      from: ADDRESS,
+    },
+    mainnet: {
+      host: 'localhost',
+      port: 8545,
+      network_id: 1,
+    },
+  },
+  solc: {
+    optimizer: {
+      enabled: true,
+      runs: 200,
+    },
+  },
+  mocha: {
+    timeout: 200000,
+    useColors: true
+  },
+}
+
+/*
+const path = process.env.TEST ? '../../../../../.env' : '../../.env'
+require('dotenv').config({path})
 const isTestnet = process.env.NETWORK === 'testnet' ? true : false
 let address, engine
 
@@ -50,3 +103,4 @@ module.exports = {
     useColors: true
   }
 }
+*/
