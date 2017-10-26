@@ -11,17 +11,18 @@ let getBlockNumber = () => {
 // ========================================================
 // Get Ethereum network
 // ========================================================
-let getNetwork = () => {
-  return new Promise((resolve, reject) => {
-    window.web3.version.getNetwork((e, r) => {
-      if (e) reject(e)
-      if (r === '1') resolve('Main net')
-      else if (r === '3') resolve('Ropsten')
-      else if (r === '42') resolve('Kovan')
-      else if (r.length === 13) resolve('Development')
-      else resolve('Unknown')
-    })
-  })
+let getNetwork = async () => {
+  try {
+    return await window.web3.eth.net.getId()
+      .then(network => {
+        if (String(network) === '1') return 'Main net'
+        else if (String(network) === '3') return 'Ropsten'
+        else if (String(network) === '42') return 'Kovan'
+        else if (String(network).length === 13) return 'Development'
+      })
+  } catch (err) {
+    return err
+  }
 }
 function* fetchEthereumInfoWorker() {
   try {

@@ -25,7 +25,7 @@ let setUserBalance = (user) => {
     if (!user.defaultAccount) reject(new Error('No default account'))
     window.web3.eth.getBalance(user.defaultAccount, (e, balance) => {
       if (e) reject(e)
-      resolve(window.web3.fromWei(balance, "ether").valueOf())
+      resolve(window.web3.utils.fromWei(balance, "ether").valueOf())
     })
   })
 }

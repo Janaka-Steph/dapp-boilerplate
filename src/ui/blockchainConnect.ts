@@ -11,17 +11,9 @@ export const run = () => new Promise((resolve, reject) => {
   window.addEventListener('load', function () {
     // Set Web3
     let web3Location = `http://${truffleConfig.networks.development.host}:${truffleConfig.networks.development.port}`
-    if (typeof window.web3 !== 'undefined') {
-      console.log('Web3 detected on window')
-      // Use Mist/MetaMask's provider
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
-    else {
-      console.log('No Web3 detected \nSet Web3')
-      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-      window.web3 = new Web3(new Web3.providers.HttpProvider(web3Location))
-      console.log('web3 added to window')
-    }
+    Web3.givenProvider ? console.log('Web3 detected') : console.log('No Web3 detected \nSet Web3')
+    window.web3 = new Web3(Web3.givenProvider || web3Location)
+    console.log('Web3 has been set')
     // ======================================================
     // Prepare smart contracts
     // ======================================================
@@ -30,6 +22,11 @@ export const run = () => new Promise((resolve, reject) => {
         .map(artifact => contract(artifact))
         .map((contract) => {
           contract.setProvider(window.web3.currentProvider)
+          //dirty hack for web3@1.0.0 support for localhost testrpc, see https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
+          if (typeof contract.currentProvider.sendAsync !== 'function') {
+            contract.currentProvider.sendAsync = () => contract.currentProvider.send.apply(contract.currentProvider, arguments)
+          }
+          // end hack
           return contract.deployed()
         }))
       .then((deployedContracts) => {
